@@ -801,10 +801,10 @@ local function TurnOnV2()
     local rxp = _G.RXP
     local profile = Dig(rxp, "settings", "profile")
     if type(profile) ~= "table" or not ns.RXPWindowEnabled() then return end
-    CenterArrow(rxp, profile)
     profile.enableBetaFeatures, profile.enableV2Interface = true, true
     if not Ours(profile.activeTheme) then profile.activeTheme = NAME_PREFIX .. CURRENT_KEY end
     SetUpDone()[setUpGuid] = true
+    CenterArrow(rxp, profile)
 end
 
 local function SetUp(force)

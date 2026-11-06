@@ -1968,6 +1968,17 @@ do
     Logout(boot)
     Check(Untouched(undone) and (offAccount.rxpSetUp == nil or offAccount.rxpSetUp["Player-U"] == nil),
         "the window turned off before the reload: nothing is set, nothing kept as done")
+    _, _, confirms = Run(offAccount, undone, "Player-U", true)
+    Check(#confirms == 1, "and with the window on again, the next login asks for it again")
+
+    -- an arrow that cannot be moved as the UI unloads does not undo the rest
+    local stuck = { activeTheme = "RXP Blue", framePositions = { arrowFrame = { { "TOP", "UIParent", "TOP", 0, 0 } } } }
+    local stuckAccount = { rxpSetup = true }
+    rxp, _, _, _, boot = Run(stuckAccount, stuck, "Player-X", true)
+    rxp.arrowFrame = nil
+    Check(not pcall(Logout, boot), "a RestedXP with no arrow frame fails at the arrow as the UI unloads")
+    Check(stuck.enableBetaFeatures == true and stuck.enableV2Interface == true and stuck.activeTheme == CURRENT
+        and stuckAccount.rxpSetUp["Player-X"] == true, "but the interface, the theme and the done mark are written first")
 
     -- the theme alone: no interface to wait for, so the theme is reloaded
     local themed = { activeTheme = "RXP Blue" }
